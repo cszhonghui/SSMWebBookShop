@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.imu.jk.mapper.ReceiveMapper">
+	<!-- 
+	private User user;
+	private String rphone;
+	private String rmailaddr;
+	private String rtargetname;
+	private Integer rid; -->
+	<resultMap type="Receive" id="receiveMap">
+		<id column="r_id" property="rid"/>
+		<result column="r_phone" property="rphone"/>
+		<result column="r_mailaddr" property="rmailaddr"/>
+		<result column="r_targetname" property="rtargetname"/>
+		<association property="user" javaType="User">
+			<id column="u_id" property="uid"/>
+			<result column="u_username" property="uusername"/>
+		</association>
+	</resultMap>
+	
+	
+	<insert id="addReceive" parameterType="Receive">
+		insert into t_receive values(null,#{user.uid},#{rphone},#{rmailaddr},#{rtargetname})
+	</insert>
+	
+	<delete id="deleteReceive" parameterType="int">
+		delete from t_receive where r_id=#{value}
+	</delete>
+	
+	<update id="modifyReceive" parameterType="Receive">
+		update t_receive
+		<set>
+		r_phone=#{rphone},
+		r_mailaddr=#{rmailaddr},
+		r_targetname=#{rtargetname}
+		</set>
+		where r_id=#{rid}
+	</update>
+	
+	
+	<select id="getTotalReceiveRow" resultType="int" parameterType="int">
+		select count(*) totalrow from t_receive where u_id=#{value};
+   </select>
+	
+	
+	<select id="pageation" resultMap="receiveMap" parameterType="int">
+		select r_id,u_id,r_phone,r_mailaddr,r_targetname from  t_receive where u_id=#{2} limit #{0},#{1} 
+	</select>
+</mapper>

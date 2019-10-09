@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="SSM_WebBookShop"
+  id="myeclipse.1566521664749"
+  context-root="/SSM_WebBookShop"
+  j2ee-spec="5.0"
+  archive="SSM_WebBookShop.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

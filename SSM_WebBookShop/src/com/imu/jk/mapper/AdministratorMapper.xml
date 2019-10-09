@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imu.jk.mapper.AdministratorMapper">
+	<select id="login" parameterType="Administrator" resultType="String">
+		select a_password from t_administrator where a_username=#{ausername}
+   </select>
+	<insert id="register" parameterType="Administrator">
+		insert into t_administrator(a_username,a_password)
+		values(#{ausername},#{apassword})
+   </insert>
+
+	<select id="getTotalAdministratorRow" resultType="int">
+		select count(*) totalrow from t_administrator;
+   </select>
+
+	<select id="pageation" resultType="Administrator" parameterType="int">
+		select * from t_administrator limit #{0},#{1}
+   </select>
+
+	<delete id="deleteAdmin" parameterType="Administrator">
+		delete from t_administrator
+		<where>
+			a_id=#{aid}
+   </where>
+	</delete>
+
+	<update id="resetPwd" parameterType="Administrator">
+		<set>
+			a_password=#{apassword}
+   </set>
+		<where>
+			a_id=#{aid}
+   </where>
+		from t_administrator
+	</update>
+	
+	<select id="queryAdminByName" resultType="Administrator" parameterType="String">
+		select a_username ausername,a_id aid,a_password apassword from t_administrator where a_username=#{value}
+	</select>
+</mapper>

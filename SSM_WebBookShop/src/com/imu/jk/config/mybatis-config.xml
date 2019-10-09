@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+  <typeAliases>
+    <!-- 类型的别名 -->
+    <!--为单个User类取别名为User：<typeAlias type="com.imu.jk.bean.User" alias="User"/>  -->
+    <!-- 包名扫描 ：会到这个包下去找用到的类-->
+    <package name="com.imu.jk.bean"/>
+    </typeAliases>
+  
+  
+  
+  
+  <mappers>
+  	<mapper resource="com/imu/jk/mapper/OrderMapper.xml"/>
+  	<mapper resource="com/imu/jk/mapper/OrderDetailMapper.xml"/>
+  	<mapper resource="com/imu/jk/mapper/ReceiveMapper.xml"/>
+  	<mapper resource="com/imu/jk/mapper/CartMapper.xml"/>
+  </mappers>
+</configuration>

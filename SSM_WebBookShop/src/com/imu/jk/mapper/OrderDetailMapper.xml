@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.imu.jk.mapper.OrderDetailMapper">
+	<resultMap type="OrderDetail" id="orderDetailMap">
+		<id column="od_id" property="odid"/>
+		<result column="b_num" property="bnum"/>
+		<result column="od_comStatus" property="odcomStatus"/>
+		<result column="od_price" property="odprice"/>
+		<result column="o_number" property="onumber"/>
+		<association property="book" javaType="Book">
+			<id column="b_id" property="bid"/>
+			<result column="b_name" property="bname"/>
+			<result column="b_pic" property="bpic"/> 
+		</association>
+	</resultMap>
+
+	<insert id="addDetail" parameterType="OrderDetail">
+		insert into t_orderdetail(o_number,b_id,b_num,od_price) values(#{onumber},#{book.bid},#{bnum},#{odprice});
+	</insert>
+	
+	<select id="queryDetailsByOno" resultMap="orderDetailMap" parameterType="String">
+		select od_id,b_num,od_comStatus,od_price,o_number,b.b_id,b_name,b_pic from t_orderdetail od left outer join t_book b on od.b_id =b.b_id where o_number=#{value} 
+	</select>
+	
+	<update id="updateCom">
+		update t_orderdetail set od_comStatus=2 where o_number=#{0} and b_id=#{1}
+	</update>
+</mapper>

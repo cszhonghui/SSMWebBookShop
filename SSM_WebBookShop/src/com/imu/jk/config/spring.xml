@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+	 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	 
+	<!-- 导入jdbc配置文件  -->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:com/imu/jk/config/jdbc.properties"></property>
+	</bean>
+	
+	<!-- 用jdbc配置文件配置的内容来配置数据源 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${driver}"></property>
+		<property name="url" value="${url}"></property>
+		<property name="username" value="${username}"></property>
+		<property name="password" value="${password}"></property>
+	</bean>
+	
+	
+	<!-- 配置sqlsessionFactoryBean，注入数据源和mybatis配置文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:com/imu/jk/config/mybatis-config.xml"></property>
+	
+	</bean>
+	
+	<!-- 自动完成基础包的扫描   和mapper接口的实现    自动关联sqlSessionFactory -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.imu.jk.mapper"></property>
+	</bean>
+	
+	<!-- 扫描service -->
+	<context:component-scan base-package="com.imu.jk.service.impl"></context:component-scan>
+
+	<!-- 配置文件解析器-->	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">    
+     <property name="defaultEncoding" value="utf-8"></property>    
+     <property name="maxUploadSize" value="5242440"></property>    
+	</bean>
+	
+	
+	<!-- 1.在文件上传解析时发现异常，此时还没有进入到Controller方法中 -->
+	<bean id="exceptionResolver" class= "org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"> 
+    <property name="exceptionMappings"> 
+        <props> 
+        <!-- 遇到MaxUploadSizeExceededException异常时，跳转到error.jsp页面  -->
+        <prop key= "org.springframework.web.multipart.MaxUploadSizeExceededException">/static/error.html </prop> 
+        </props> 
+    </property>
+	</bean>
+</beans>

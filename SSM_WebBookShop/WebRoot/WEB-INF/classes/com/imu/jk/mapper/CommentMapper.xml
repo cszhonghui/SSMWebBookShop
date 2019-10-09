@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.imu.jk.mapper.CommentMapper">  
+	<resultMap type="Comment" id="commentBean">
+          <id column="c_id" property="cid"/>
+          <result column="c_date" property="cdate"/>
+          <result column="c_content" property="ccontent"/>           
+          <!-- 多对一的关系用association，property：属性名称；javaType：属性类型 -->
+          <association property="user" javaType="User">
+              <id column="u_id" property="uid"/>
+              <result column="u_username" property="uusername"/>
+              <result column="u_password" property="upassword"/>
+              <result column="u_email" property="uemail"/>
+              <result column="u_phone" property="uphone"/>   
+              <result column="u_gender" property="ugender"/>
+              <result column="u_avatar" property="uavatar"/>      
+          </association>
+          <association property="book" javaType="Book">
+	            <id column="b_id" property="bid"/>
+	            <result column="b_isbn" property="bisbn"/>
+	            <result column="b_name" property="bname"/>
+	            <result column="b_author" property="bauthor"/>
+	            <result column="b_publisher" property="bpublisher"/>			            
+	            <result column="b_pic" property="bpic"/>            
+	            <result column="b_stock" property="bstock"/>
+	            <result column="b_content" property="bcontent"/>            
+	            <result column="b_price" property="bprice"/>                          
+          </association>
+	</resultMap>
+	
+	    <select id="getCommentByUserId" parameterType="int" resultMap="commentBean">
+		    select b.b_id ,b_isbn ,b_name ,
+		    b_author ,b_publisher ,b_price ,
+		    b.bt_id ,b_pic ,b_stock ,bt_name, b_content ,
+		    c.c_id,c_date,c_content,
+		    u.u_id,u_username,u_password,u_email,u_phone,u_gender,u_avatar
+		    from t_comment c,t_user u,t_book b
+		    where c.u_id=#{value} and c.u_id=u.u_id and c.b_id=b.b_id
+        </select> 
+        
+           <select id="getTotalRowByBookId"  parameterType="int"   resultType="int" >
+				select count(*) totalrow from t_comment where b_id=#{value};
+   			</select>
+        
+		<select id="getCommentByBookId" parameterType="int" resultMap="commentBean">
+		    select b.b_id ,b_isbn ,b_name ,
+		    b_author ,b_publisher ,b_price ,
+		    b.bt_id ,b_pic ,b_stock , b_content ,
+		    c.c_id,c_date,c_content,
+		    u.u_id,u_username,u_password,u_email,u_phone,u_gender,u_avatar
+		    from t_comment c,t_user u,t_book b
+		    where c.b_id=#{0} and c.u_id=u.u_id and c.b_id=b.b_id 
+		    limit #{1},#{2}
+        </select> 
+        <select id="getAllComment"  resultMap="commentBean">
+		    select b.b_id ,b_isbn ,b_name ,
+		    b_author ,b_publisher ,b_price ,
+		    b.bt_id ,b_pic ,b_stock , b_content ,
+		    c.c_id,c_date,c_content,
+		    u.u_id,u_username,u_password,u_email,u_phone,u_gender,u_avatar
+		    from t_comment c,t_user u,t_book b
+		    where  c.u_id=u.u_id and c.b_id=b.b_id
+        </select> 
+        
+   
+   	<insert id="makeComm" parameterType="Comment" >
+	insert into t_comment(c_id,u_id,b_id,c_date,c_content)
+	values(#{cid},#{user.uid},#{book.bid},#{cdate},#{ccontent})
+	</insert>
+	
+   
+   
+   <update id="modifyComm" parameterType="Comment">
+     update t_comment 
+     <set>
+     c_content=#{ccontent}
+     </set>
+     <where>
+     c_id=#{cid}     
+     </where> 
+   </update>
+   
+   <delete id="deleteComm" parameterType="Comment">
+     delete from t_comment 
+     <where>
+      c_id=#{cid}   
+     </where>
+   </delete>
+</mapper>

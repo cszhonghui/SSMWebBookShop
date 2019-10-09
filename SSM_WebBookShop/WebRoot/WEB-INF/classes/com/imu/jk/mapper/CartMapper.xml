@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.imu.jk.mapper.CartMapper">
+<!-- 
+private Integer cid;
+	private User user;
+	private Book book;
+	private Integer cbnum;
+ -->
+ 	<resultMap type="Cart" id="cartMap">
+ 		<id column="c_id" property="cid"/>
+ 		<result column="c_bnum" property="cbnum"/>
+ 		<association property="user" javaType="User">
+ 			<id column="u_id" property="uid"/>
+ 		</association>
+ 		<association property="book" javaType="Book">
+ 			<id column="b_id" property="bid"/>
+ 			<result column="b_name" property="bname"/>
+ 			<result column="b_isbn" property="bisbn"/>
+ 			<result column="b_price" property="bprice"/>
+ 			<result column="b_pic" property="bpic"/>
+ 			<result column="b_stock" property="bstock"/>
+ 		</association>
+ 	</resultMap>
+	<insert id="addItem" parameterType="Cart">
+		insert into t_cart values(null,#{user.uid},#{book.bid},#{cbnum})
+	</insert>
+	
+	<update id="addNum" parameterType="int">
+		update t_cart set c_bnum=c_bnum+#{2} where u_id=#{0} and b_id=#{1}
+	</update>
+	
+	<update id="modifyItem" parameterType="int">
+		update t_cart set c_bnum=#{1} where c_id=#{0}
+	</update>
+	
+	<delete id="deleteItem" parameterType="int">
+		delete from t_cart where c_id=#{value}
+	</delete>
+	
+	<delete id="clear" parameterType="int">
+		delete from t_cart where u_id=#{value}
+	</delete>
+	
+	<select id="getCartsByUid" parameterType="int" resultMap="cartMap">
+		select c_id,c_bnum,u_id,b.b_id,b_name,b_isbn,b_price,b_pic,b_stock from t_cart c left outer join t_book b on c.b_id=b.b_id where u_id=#{value} 
+	</select>
+	
+	<select id="check" parameterType="int" resultType="int">
+		select count(*) from t_cart where u_id=#{0} and b_id=#{1}
+	</select>
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imu.jk.mapper.UserMapper">
+	<!-- 登录 -->
+	<select id="login" parameterType="User" resultType="String">
+		select u_password from t_user where u_username=#{uusername}
+   </select>
+
+
+
+	<!-- 注册 -->
+	<select id="register" parameterType="User">
+		insert into t_user(u_username,u_password,u_email,u_phone)
+		values(#{uusername},#{upassword},#{uemail},#{uphone})
+   </select>
+
+	<!-- 修改个人信息 -->
+	<update id="modifyInfo" parameterType="User">
+		update t_user
+		<set>
+			u_username=#{uusername},u_email=#{uemail},u_phone=#{uphone},u_gender=#{ugender},u_birthdate=#{ubirthdate}
+		</set>
+		<where>
+			u_id=#{uid}     
+    </where>
+	</update>
+
+	<!-- 得到用户的总页数 -->
+	<select id="getTotalUserRow" resultType="int">
+		select count(*) totalrow from t_user;
+   </select>
+
+	<!-- 管理员查询用户列表 -->
+	<select id="pageation" resultType="User" parameterType="int">
+		select u_id uid,u_username uusername,u_gender ugender,u_phone uphone,u_email uemail from t_user limit #{0},#{1}
+   </select>
+
+	<!-- 管理员根据username查询用户 -->
+	<select id="queryUserByName" resultType="User" parameterType="String">
+		select u_password upassword,u_id uid,u_username uusername,u_gender ugender,u_birthdate ubirthdate,u_phone uphone,u_email uemail from t_user where u_username=#{value}
+   </select>
+
+	<!-- 管理员删除普通用户 -->
+	<delete id="deleteUser" parameterType="User">
+		delete from t_user
+		<where>
+			u_id=#{uid}   
+    </where>
+	</delete>
+
+	<!-- 管理员重置普通用户密码 -->
+	<update id="resetPwd" parameterType="User">
+		update t_user
+		<set>
+			u_password=#{upassword}
+    </set>
+		<where>
+			u_id=#{uid}     
+    </where>
+	</update>
+	
+	
+	<!-- 根据用户uid查询用户全部信息 -->
+	<select id="queryUserById" parameterType="int" resultType="User">
+		select u_password upassword,u_id uid,u_username uusername,u_gender ugender,u_birthdate ubirthdate,u_phone uphone,u_email uemail from t_user where u_id=#{value}
+	</select>
+	
+	<!-- 修改用户的全部信息S-->
+	<update id="modifyInfoAll" parameterType="User">
+		update t_user
+		<set>
+			u_username=#{uusername},u_email=#{uemail},u_phone=#{uphone},u_gender=#{ugender},u_birthdate=#{ubirthdate},u_password=#{upassword}
+		</set>
+		<where>
+			u_id=#{uid}     
+    </where>
+	</update>
+
+</mapper>

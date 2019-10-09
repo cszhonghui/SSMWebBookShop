@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.imu.jk.mapper.BookMapper">  
+
+	<resultMap type="Book" id="bookBean">
+	            <id column="b_id" property="bid"/>
+	            <result column="b_isbn" property="bisbn"/>
+	            <result column="b_name" property="bname"/>
+	            <result column="b_author" property="bauthor"/>
+	            <result column="b_publisher" property="bpublisher"/>			            
+	            <result column="b_pic" property="bpic"/>            
+	            <result column="b_stock" property="bstock"/>
+	            <result column="b_content" property="bcontent"/>            
+	            <result column="b_price" property="bprice"/>                          
+	            <!-- 多对一的关系用association，property：属性名称；javaType：属性类型 -->
+	            <association property="bookType" javaType="BookType">
+	                <id column="bt_id" property="btid"/>
+	                <result column="bt_name" property="btname"/>
+	            </association>
+	</resultMap>
+	
+
+	
+	
+	
+	
+		 <select id="queryBookBySearch"  resultMap="bookBean">
+		    select b_id ,b_isbn ,b_name ,
+		    b_author ,b_publisher ,b_price ,
+		    b.bt_id ,b_pic ,b_stock ,bt_name, b_content 
+		    from t_book b
+		    left join t_booktype t on b.bt_id=t.bt_id
+		    where b_name like concat('%',#{0},'%')
+		    limit #{1}, #{2}
+        </select> 
+        
+        <select id="getTotalRowBySearch" parameterType="string" resultType="int" >
+        select count(*) from t_book where b_name like concat('%',#{value},'%')
+        </select> 
+	
+	
+	    <select id="queryBookByBtid" parameterType="int" resultMap="bookBean">
+		    select b_id ,b_isbn ,b_name ,
+		    b_author ,b_publisher ,b_price ,
+		    b.bt_id ,b_pic ,b_stock ,bt_name, b_content 
+		    from t_book b
+		    left join t_booktype t on b.bt_id=t.bt_id
+		    where b.bt_id=#{0}
+		    limit #{1}, #{2}
+        </select> 
+        
+        <select id="getTotalRowByBtid" parameterType="int" resultType="int" >
+        select count(*) from t_book where bt_id=#{value} 
+        </select> 
+	
+
+	
+	
+	<select id="queryBook" resultMap="bookBean">
+		select b_id, b_isbn , b_name ,b_author ,
+		b_publisher ,b_price ,b.bt_id,
+		b_pic ,b_stock ,b_content ,bt_name 
+		from t_book b 
+		left join t_booktype t on b.bt_id=t.bt_id
+	</select>
+   
+   <select id="queryBookById" resultMap="bookBean" parameterType="int">
+    select b_id ,b_isbn ,b_name ,
+    b_author ,b_publisher ,b_price ,
+    b.bt_id ,b_pic ,b_stock ,bt_name, b_content 
+    from t_book b
+    left join t_booktype t on b.bt_id=t.bt_id
+    where b_id=#{value}
+   </select>
+   
+   <select id="getTotalRow" resultType="int">
+	select count(*) totalrow from t_book;
+   </select>
+	
+
+	<select id="pagination" parameterType="int" resultMap="bookBean">
+    select b_id ,b_isbn ,b_name ,b_author ,b_publisher ,b_price ,
+    b.bt_id ,b_pic ,b_stock ,t.bt_name, b_content 
+    from t_book b
+    left join t_booktype t on b.bt_id=t.bt_id
+    limit #{0},#{1}
+	</select>
+   
+   	<insert id="add" parameterType="Book" >
+	insert into t_book(b_isbn,b_name,b_author,b_publisher,b_price,bt_id,b_pic,b_stock,b_content)
+	values(#{bisbn},#{bname},#{bauthor},#{bpublisher},#{bprice},#{bookType.btid},#{bpic},#{bstock},#{bcontent})
+	</insert>
+	
+	<update id="subStock" parameterType="int">
+		update t_book set b_stock=b_stock-#{1} where b_id=#{0}
+	</update>
+	
+   
+   
+   <update id="modify" parameterType="Book">
+     update t_book 
+     <set>
+      b_isbn=#{bisbn},b_name=#{bname},b_pic=#{bpic},b_stock=#{bstock},
+    b_author=#{bauthor},b_publisher=#{bpublisher},
+    b_price=#{bprice},bt_id=#{bookType.btid},b_content=#{bcontent}
+     </set>
+     <where>
+     b_id=#{bid}     
+     </where> 
+   </update>
+   
+   <delete id="remove" parameterType="int">
+     delete from t_book 
+     <where>
+      b_id=#{value}   
+     </where>
+   </delete>
+</mapper>

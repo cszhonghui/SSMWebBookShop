@@ -1,0 +1,131 @@
+#������ݿ�
+create database webbookshop;
+
+drop table if exists t_user;
+#�û��?�û���¼��Ϣ(t_user)
+create table if not exists t_user(
+u_id int(8) primary key auto_increment,
+u_username varchar(16) unique not null,
+u_password varchar(16) not null,
+u_email varchar(30) not null,
+u_phone varchar(11),
+u_gender int(1),
+u_birthdate timestamp,
+u_avatar varchar(50)
+)auto_increment=1000001;
+
+
+
+#�鼮�?�鼮���(t_book)
+drop table if exists t_book;
+create table if not exists t_book(
+b_id int(8) primary key auto_increment,
+b_isbn varchar(13) not null unique,
+b_name varchar(50) not null,
+b_author varchar(30) not null,
+b_publisher varchar(20) not null,
+b_price float not null,
+bt_id int(8) not null,
+b_pic varchar(50) not null,#����·��
+b_stock int(6) not null,
+b_content varchar(2000))auto_increment=100001;
+
+
+#�鼮����:
+drop table if exists t_booktype;
+create table if not exists t_booktype(
+bt_id int(4) primary key auto_increment,
+bt_name varchar(50) not null unique
+)auto_increment=1001;
+
+
+
+#����Ա�?
+drop table if exists t_administrator;
+create table if not exists t_administrator(
+a_id int(4) primary key auto_increment,
+a_username varchar(16) not null unique,
+a_password varchar(16) not null
+)auto_increment=1001;
+
+#����?
+drop table if exists t_cart;
+create table if not exists t_cart(
+c_id int(10) primary key auto_increment,
+u_id int(8) not null,
+b_id int(8) not null,
+c_bnum int(5) not null
+)auto_increment=100000001;
+
+#�ջ���Ϣ�?
+drop table if exists t_receive;
+create table if not exists t_receive(
+r_id int(8) primary key auto_increment,
+u_id int(8) not null,
+r_phone varchar(12) not null,
+r_mailaddr varchar(50) not null,
+r_targetname varchar(10) not null
+)auto_increment=1000001;
+
+#������:
+drop table if exists t_order;
+create table if not exists t_order(
+o_id int(10) primary key auto_increment,
+u_id int(8) not null,
+r_id int(8) not null,
+o_amount double not null,
+o_opdate timestamp not null,
+o_number varchar(20) not null,
+o_status int(1) not null default 1
+)auto_increment=10000001;
+
+
+#�������飺
+drop table if exists t_orderdetail;
+create table if not exists t_orderdetail(
+od_id int(10) primary key auto_increment,
+o_number varchar(20) not null,
+b_id int(8) not null,
+b_num int(4) not null,
+od_comStatus int(1) not null default 1,
+od_price double not null
+)auto_increment=10000001;
+
+
+
+
+#�鼮���۱�
+drop table if exists t_comment;
+create table if not exists t_comment(
+c_id int(10) primary key auto_increment,
+b_id int(8) not null,
+u_id int(8) not null,
+c_date timestamp default CURRENT_TIMESTAMP,
+c_content varchar(200)
+)auto_increment=10000001;
+
+
+#�㼣
+drop table if exists t_history;
+create table if not exists t_history(
+h_id int(10) primary key auto_increment,
+u_id int(8) not null,
+b_id int(8) not null
+)auto_increment=1;
+
+
+
+insert into t_user(u_username,u_password,u_email) values("zs","123123","111@qq.com");
+insert into t_receive(u_id,r_phone,r_mailaddr,r_targetname) values(1000001,"13333333333","home","zs");
+insert into t_book values(null,'isbn1111','mysql','����','publisher','11.1','1001','c:\\','10','content');
+insert into t_booktype values(null,'����');
+
+
+
+
+
+
+
+
+
+

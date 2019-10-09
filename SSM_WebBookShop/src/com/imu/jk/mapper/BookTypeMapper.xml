@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.imu.jk.mapper.BookTypeMapper">  
+
+      <resultMap type="BookType" id="bookTypeBean">
+            <id column="bt_id" property="btid" />
+            <result column="bt_name" property="btname" />
+            <!-- 一对多的关系用collection表示 -->
+            <!-- property: 指的是集合属性的值, ofType：指的是集合中元素的类型 -->
+            <collection property="books" ofType="Book">
+	            <id column="b_id" property="bid"/>
+	            <result column="b_isbn" property="bisbn"/>
+	            <result column="b_name" property="bname"/>
+	            <result column="b_author" property="bauthor"/>
+	            <result column="b_publisher" property="bpublisher"/>			            
+	            <result column="b_pic" property="bpic"/>            
+	            <result column="b_stock" property="bstock"/>
+	            <result column="b_content" property="bcontent"/>            
+	            <result column="b_price" property="bprice"/>           
+            </collection>
+        </resultMap>
+
+
+        <select id="queryBookTypes" resultType="BookType">
+            select bt_id btid,bt_name btname
+                from t_booktype
+        </select> 
+
+        <select id="getNameByTypeId" parameterType="int" resultType="BookType">
+            select bt_id btid,bt_name btname
+                from t_booktype
+                where bt_id=#{value}
+        </select> 
+
+   
+   	<insert id="addType" parameterType="BookType" >
+	insert into t_booktype(bt_id,bt_name)
+	values(#{btid},#{btname})
+	</insert>
+	
+   
+   
+   <update id="modify" parameterType="BookType">
+     update t_booktype 
+     <set>
+      bt_name=#{btname}
+     </set>
+     <where>
+     bt_id=#{btid}     
+     </where> 
+   </update>
+   
+   <delete id="remove" parameterType="int">
+     delete from t_booktype 
+     <where>
+      bt_id=#{value}   
+     </where>
+   </delete>
+</mapper>

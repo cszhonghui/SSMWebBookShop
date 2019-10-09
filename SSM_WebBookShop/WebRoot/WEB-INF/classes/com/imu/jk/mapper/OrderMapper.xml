@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.imu.jk.mapper.OrderMapper">
+
+	<resultMap type="Order" id="orderMap">
+		<id column="o_id" property="oid" />
+    	<result column="o_amount" property="oamount" />
+    	<result column="o_opdate" property="oopdate"  jdbcType="TIMESTAMP"/>
+    	<result column="o_number" property="onumber" />
+    	<result column="o_status" property="ostatus" />
+    	<association property="user" javaType="User">
+                <id column="u_id" property="uid"/>
+                <result column="u_username" property="uusername"/>
+        </association>
+        <association property="receive" javaType="Receive">
+                <id column="r_id" property="rid"/>
+                <result column="r_phone" property="rphone"/>
+                <result column="r_mailaddr" property="rmailaddr"/>
+                <result column="r_targetname" property="rtargetname"/>
+        </association>
+	</resultMap>
+
+	<insert id="genOrder" parameterType="Order">
+		insert into t_order(u_id,o_amount,o_number) values(#{user.uid},#{oamount},#{onumber})
+	</insert>
+	
+	<delete id="cancelOrder" parameterType="int">
+		delete from t_order
+		<where>
+		o_id=#{value}
+		</where>
+	</delete>
+	
+	<update id="updateStatu" parameterType="int">
+		update t_order set o_status=#{1} where o_id=#{0}
+	</update>
+	
+	<select id="checkOrder" parameterType="int" resultType="int">
+		select count(*) from t_order where u_id=#{value} and o_status=1
+	</select>
+	
+	<select id="getOrder" resultMap="orderMap" parameterType="String">
+		select o_id,o_amount,o_opdate,o_number,o_status,u.u_id,u_username,r.r_id,r_phone,r_mailaddr,r_targetname from 
+		t_order o
+		left outer join t_user u on o.u_id=u.u_id
+		left outer join t_receive r on o.r_id=r.r_id
+		where o.o_number=#{value}
+	</select>
+	
+	<update id="setReceive" parameterType="int">
+		update t_order set r_id=#{1} where o_id=#{0}
+	</update>
+	
+	<select id="queryOrdersByUidPage" resultMap="orderMap" parameterType="int">
+		select o_id,o_amount,o_opdate,o_number,o_status,u.u_id,u_username,r.r_id,r_phone,r_mailaddr,r_targetname from 
+		t_order o,t_user u,t_receive r where o.u_id=u.u_id and o.r_id=r.r_id and o.u_id=#{0} limit #{1},#{2}
+	</select>
+	
+	<select id="getTotalRowByUid" resultType="int" parameterType="int">
+		select count(*) from t_order where u_id=#{value} and o_status=2
+	</select>
+	
+	<select id="getTotalOnSearch" resultType="int" parameterType="String">
+		select count(*) from t_order o,t_receive r where o.r_id=r.r_id and o_number like #{0} or r_targetname like #{1}
+	</select>
+	
+	<select id="search" resultMap="orderMap">
+		select o_id,o_amount,o_opdate,o_number,o_status,u.u_id,u_username,r.r_id,r_phone,r_mailaddr,r_targetname from 
+		t_order o,t_user u,t_receive r where o.u_id=u.u_id and o.r_id=r.r_id and (o_number like #{0} or r_targetname like #{1}) limit #{2},#{3}
+	</select>
+	
+	<update id="modifyOrder" parameterType="int">
+		update t_order
+		<set>
+		u_id=#{user.uid},
+		r_id=#{receive.rid},
+		o_amount=#{oamount},
+		o_status=#{ostatus}
+		</set>
+		<where>o_id=#{oid}</where>
+	</update>
+	
+	
+	<select id="queryOrdersPage" resultMap="orderMap" parameterType="int">
+		select o_id,o_amount,o_opdate,o_number,o_status,u.u_id,u_username,r.r_id,r_phone,r_mailaddr,r_targetname from 
+		t_order o,t_user u,t_receive r where o.u_id=u.u_id and o.r_id=r.r_id limit #{0},#{1}
+	</select>
+	
+	<select id="getTotalRow" resultType="int">
+		select count(*) from t_order
+	</select>
+	
+	
+</mapper>

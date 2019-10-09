@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.imu.jk.mapper.HistoryMapper">  
+	<resultMap type="History" id="historyBean">
+          <id column="h_id" property="hid"/>     
+          <!-- 多对一的关系用association，property：属性名称；javaType：属性类型 -->
+          <association property="user" javaType="User">
+              <id column="u_id" property="uid"/>
+              <result column="u_username" property="uusername"/>
+              <result column="u_password" property="upassword"/>
+              <result column="u_email" property="uemail"/>
+              <result column="u_phone" property="uphone"/>   
+              <result column="u_gender" property="ugender"/>
+              <result column="u_avatar" property="uavatar"/>      
+          </association>
+          <association property="book" javaType="Book">
+	            <id column="b_id" property="bid"/>
+	            <result column="b_isbn" property="bisbn"/>
+	            <result column="b_name" property="bname"/>
+	            <result column="b_author" property="bauthor"/>
+	            <result column="b_publisher" property="bpublisher"/>			            
+	            <result column="b_pic" property="bpic"/>            
+	            <result column="b_stock" property="bstock"/>
+	            <result column="b_content" property="bcontent"/>            
+	            <result column="b_price" property="bprice"/>                          
+          </association>
+	</resultMap>
+	
+	    <select id="queryHisByUid" parameterType="int" resultMap="historyBean">
+		    select b.b_id ,b_isbn ,b_name ,
+		    b_author ,b_publisher ,b_price ,
+		    b.bt_id ,b_pic ,b_stock, b_content ,
+		    h_id,
+		    u.u_id,u_username,u_password,u_email,u_phone,u_gender,u_avatar
+		    from t_history h,t_user u,t_book b
+		    where h.u_id=#{value} and h.u_id=u.u_id and b.b_id=h.b_id
+		    Order by h_id desc
+        </select> 
+   
+   	<insert id="addHistory" parameterType="History" >
+	insert into t_history(h_id,u_id,b_id)
+	values(#{hid},#{user.uid},#{book.bid})
+	</insert>
+   
+   <delete id="clearHistoriesByUid" parameterType="int">
+     delete from t_history 
+     <where>
+      u_id=#{value}   
+     </where>
+   </delete>
+</mapper>
